@@ -1,2 +1,1 @@
-# flask-sri
-Flask-SRI
+# Flask-SRI
