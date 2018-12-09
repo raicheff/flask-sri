@@ -17,13 +17,13 @@ class SRI(object):
     Documentation:
     https://flask-sri.readthedocs.io
 
-    For use with the Grunt SRI plug-in:
-    https://github.com/neftaly/grunt-sri
+    For use with the Gulp-SRI plug-in:
+    https://github.com/mathisonian/gulp-sri
 
     :param app: Flask app to initialize with. Defaults to `None`
     """
 
-    sri_directives = None
+    manifest = None
 
     def __init__(self, app=None):
         if app is not None:
@@ -31,15 +31,15 @@ class SRI(object):
 
     def init_app(self, app):
         try:
-            with app.open_resource(app.config.get('SRI_DIRECTIVES'), mode='r') as f:
-                self.sri_directives = json.load(f)
+            with app.open_resource(app.config.get('SRI_MANIFEST'), mode='r') as fp:
+                self.manifest = json.load(fp)
         except IOError:
-            warnings.warn('SRI_DIRECTIVES not set', RuntimeWarning, stacklevel=2)
-            self.sri_directives = {}
-        app.jinja_env.globals.update(sri=self.sri)
+            warnings.warn('SRI_MANIFEST not set', RuntimeWarning, stacklevel=2)
+            self.manifest = {}
+        app.jinja_env.globals.update(sri_hash=self.sri_hash)
 
-    def sri(self, resource):
-        return self.sri_directives.get('@' + resource, '')
+    def sri_hash(self, resource):
+        return self.manifest.get(resource, '')
 
 
 # EOF
